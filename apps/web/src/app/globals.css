@@ -1,23 +1,23 @@
 @import "tailwindcss";
 
-/* ─── Color System ─────────────────────────────────────────────────── */
+/* ─── Color System (Light Theme) ──────────────────────────────────── */
 :root {
-  --color-bg: #07070f;
-  --color-surface: #0d0d1a;
-  --color-card: #111120;
-  --color-card-border: rgba(255, 255, 255, 0.065);
+  --color-bg: #ffffff;
+  --color-surface: #f8fafc;
+  --color-card: #ffffff;
+  --color-card-border: #e5e7eb;
 
-  --color-primary: #818cf8;
-  --color-primary-dark: #6366f1;
-  --color-secondary: #22d3ee;
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-secondary: #6366f1;
 
-  --color-text: #e2e2f0;
-  --color-text-muted: #6a6a88;
-  --color-text-subtle: #3a3a50;
+  --color-text: #111827;
+  --color-text-muted: #6b7280;
+  --color-text-subtle: #9ca3af;
 
-  --color-success: #34d399;
-  --color-warning: #fbbf24;
-  --color-error: #f87171;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
 
   --font-display: 'Syne', sans-serif;
   --font-body: 'Outfit', sans-serif;
@@ -41,31 +41,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100%;
-}
-
-/* ─── Background Grid (fixed, z-0) ─────────────────────────────────── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 44px 44px;
-}
-
-/* ─── Background Gradient Orbs (fixed, z-0) ─────────────────────────── */
-body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 60% 50% at -10% -10%, rgba(99, 102, 241, 0.18) 0%, transparent 70%),
-    radial-gradient(ellipse 55% 45% at 110% 110%, rgba(34, 211, 238, 0.14) 0%, transparent 70%);
 }
 
 /* ─── Custom Scrollbar ──────────────────────────────────────────────── */

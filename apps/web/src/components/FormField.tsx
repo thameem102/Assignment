@@ -1,17 +1,6 @@
 'use client';
 
 import { Controller, Control, FieldErrors } from 'react-hook-form';
-import TextField from '@mui/material/TextField';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import FormHelperText from '@mui/material/FormHelperText';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
-import FormLabel from '@mui/material/FormLabel';
-import Box from '@mui/material/Box';
 import { FormFieldConfig } from '@/lib/types';
 
 type FormValues = Record<string, string>;
@@ -32,12 +21,29 @@ export default function FormField({ field, control, errors }: FormFieldProps) {
   const rules = {
     required: field.required ? `${field.name} is required` : false,
     ...(field.fieldType === 'TEXT' && field.minLength !== undefined
-      ? { minLength: { value: field.minLength, message: `Minimum ${field.minLength} characters` } }
+      ? {
+          minLength: {
+            value: field.minLength,
+            message: `Minimum ${field.minLength} characters`,
+          },
+        }
       : {}),
     ...(field.fieldType === 'TEXT' && field.maxLength !== undefined
-      ? { maxLength: { value: field.maxLength, message: `Maximum ${field.maxLength} characters` } }
+      ? {
+          maxLength: {
+            value: field.maxLength,
+            message: `Maximum ${field.maxLength} characters`,
+          },
+        }
       : {}),
   };
+
+  const inputClass = (hasError: boolean) =>
+    `w-full px-4 py-2.5 border rounded-lg text-gray-800 placeholder-gray-400 bg-white outline-none transition-all text-sm ${
+      hasError
+        ? 'border-red-400 focus:ring-2 focus:ring-red-100'
+        : 'border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100'
+    }`;
 
   if (field.fieldType === 'TEXT') {
     return (
@@ -46,16 +52,25 @@ export default function FormField({ field, control, errors }: FormFieldProps) {
         control={control}
         rules={rules}
         render={({ field: { onChange, value, ref } }) => (
-          <TextField
-            fullWidth
-            label={field.name}
-            value={value ?? ''}
-            onChange={onChange}
-            inputRef={ref}
-            error={!!error}
-            helperText={error?.message ?? ' '}
-            required={field.required}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              {field.name}
+              {field.required && (
+                <span className="text-red-400 ml-0.5">*</span>
+              )}
+            </label>
+            <input
+              ref={ref}
+              type={field.name.toLowerCase().includes('email') ? 'email' : 'text'}
+              value={value ?? ''}
+              onChange={onChange}
+              placeholder={field.defaultValue || `Enter ${field.name.toLowerCase()}`}
+              className={inputClass(!!error)}
+            />
+            {error && (
+              <p className="mt-1 text-xs text-red-500">{error.message}</p>
+            )}
+          </div>
         )}
       />
     );
@@ -68,17 +83,29 @@ export default function FormField({ field, control, errors }: FormFieldProps) {
         control={control}
         rules={rules}
         render={({ field: { onChange, value } }) => (
-          <FormControl fullWidth error={!!error} required={field.required} variant="filled">
-            <InputLabel>{field.name}</InputLabel>
-            <Select value={value ?? ''} onChange={onChange}>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              {field.name}
+              {field.required && (
+                <span className="text-red-400 ml-0.5">*</span>
+              )}
+            </label>
+            <select
+              value={value ?? ''}
+              onChange={onChange}
+              className={`${inputClass(!!error)} appearance-none cursor-pointer`}
+            >
+              <option value="">Select {field.name}</option>
               {(field.listOfValues1 ?? []).map((option) => (
-                <MenuItem key={option} value={option}>
+                <option key={option} value={option}>
                   {option}
-                </MenuItem>
+                </option>
               ))}
-            </Select>
-            <FormHelperText>{error?.message ?? ' '}</FormHelperText>
-          </FormControl>
+            </select>
+            {error && (
+              <p className="mt-1 text-xs text-red-500">{error.message}</p>
+            )}
+          </div>
         )}
       />
     );
@@ -90,50 +117,36 @@ export default function FormField({ field, control, errors }: FormFieldProps) {
         name={key}
         control={control}
         rules={rules}
-        render={({ field: { onChange, value } }) => (
-          <Box
-            sx={{
-              p: 2,
-              border: '1px solid rgba(255,255,255,0.065)',
-              borderRadius: '8px',
-              backgroundColor: 'rgba(255,255,255,0.02)',
-            }}
-          >
-            <FormControl error={!!error} required={field.required}>
-              <FormLabel
-                sx={{
-                  fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
-                  fontSize: '0.68rem',
-                  letterSpacing: '0.1em',
-                  textTransform: 'uppercase',
-                  fontWeight: 600,
-                  color: '#6a6a88',
-                  mb: 1,
-                  '&.Mui-focused': { color: '#818cf8' },
-                  '&.Mui-error': { color: '#f87171' },
-                }}
-              >
-                {field.name}
-              </FormLabel>
-              <RadioGroup value={value ?? ''} onChange={onChange} row>
-                {(field.listOfValues1 ?? []).map((option) => (
-                  <FormControlLabel
-                    key={option}
+        render={({ field: { onChange, value, name } }) => (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {field.name}
+              {field.required && (
+                <span className="text-red-400 ml-0.5">*</span>
+              )}
+            </label>
+            <div className="flex gap-4">
+              {(field.listOfValues1 ?? []).map((option) => (
+                <label
+                  key={option}
+                  className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer"
+                >
+                  <input
+                    type="radio"
+                    name={name}
                     value={option}
-                    control={<Radio />}
-                    label={option}
-                    sx={{
-                      '& .MuiFormControlLabel-label': {
-                        fontSize: '0.875rem',
-                        color: '#e2e2f0',
-                      },
-                    }}
+                    checked={value === option}
+                    onChange={onChange}
+                    className="w-4 h-4 accent-blue-500"
                   />
-                ))}
-              </RadioGroup>
-              <FormHelperText>{error?.message ?? ' '}</FormHelperText>
-            </FormControl>
-          </Box>
+                  {option}
+                </label>
+              ))}
+            </div>
+            {error && (
+              <p className="mt-1 text-xs text-red-500">{error.message}</p>
+            )}
+          </div>
         )}
       />
     );

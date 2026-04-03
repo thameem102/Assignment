@@ -2,11 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
 import Link from 'next/link';
 import { getCurrentUser, clearCurrentUser } from '@/lib/localStorage';
 import { User } from '@/lib/types';
@@ -27,117 +22,118 @@ export default function Navbar() {
   };
 
   return (
-    <AppBar position="sticky" sx={{ zIndex: 50 }}>
-      <Toolbar sx={{ minHeight: '56px !important', px: { xs: 2, sm: 3 } }}>
-        {/* Logo */}
-        <Box
-          component={Link}
-          href={user ? '/dashboard' : '/login'}
-          sx={{ display: 'flex', alignItems: 'center', gap: 1.25, textDecoration: 'none', flexGrow: 1 }}
-        >
-          <Box
-            sx={{
-              width: 26,
-              height: 26,
-              background: 'linear-gradient(135deg, #818cf8, #22d3ee)',
-              clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)',
-              flexShrink: 0,
-            }}
-          />
-        </Box>
+    <nav
+      className="sticky top-0 z-50 bg-white/85 backdrop-blur-xl border-b border-gray-200"
+      style={{ fontFamily: 'var(--font-body), Outfit, sans-serif' }}
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14">
+          {/* Logo */}
+          <Link
+            href={user ? '/dashboard' : '/login'}
+            className="flex items-center gap-2.5 no-underline"
+          >
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 via-blue-500 to-cyan-400 flex items-center justify-center">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 2L2 7L12 12L22 7L12 2Z"
+                  fill="white"
+                  opacity="0.9"
+                />
+                <path
+                  d="M2 17L12 22L22 17"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M2 12L12 17L22 12"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <span
+              className="text-sm font-bold text-gray-900 hidden sm:block"
+              style={{
+                fontFamily: 'var(--font-display), Syne, sans-serif',
+              }}
+            >
+              Dashboard
+            </span>
+          </Link>
 
-        {/* Nav right */}
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          {user ? (
-            <>
-              <NavLink href="/dashboard" active={pathname === '/dashboard'} label="Dashboard" />
-              <Typography
-                variant="caption"
-                sx={{
-                  color: '#6a6a88',
-                  fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
-                  fontSize: '0.7rem',
-                  px: 1,
-                  display: { xs: 'none', sm: 'block' },
-                }}
-              >
-                {user.fullName}
-              </Typography>
-              <Button
-                size="small"
-                variant="outlined"
-                color="error"
-                onClick={handleLogout}
-                sx={{ fontSize: '0.65rem', py: 0.5, px: 1.5 }}
-              >
-                Logout
-              </Button>
-            </>
-          ) : (
-            <>
-              <NavLink href="/login" active={pathname === '/login'} label="Login" />
-              <NavLink href="/signup" active={pathname === '/signup'} label="Signup" />
-            </>
-          )}
-        </Box>
-      </Toolbar>
-    </AppBar>
+          {/* Nav right */}
+          <div className="flex items-center gap-1">
+            {user ? (
+              <>
+                <NavLink
+                  href="/dashboard"
+                  active={pathname === '/dashboard'}
+                  label="Dashboard"
+                />
+                <span className="hidden sm:block text-xs text-gray-400 px-2 font-medium">
+                  {user.fullName}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="ml-1 px-3 py-1.5 text-xs font-medium text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <NavLink
+                  href="/login"
+                  active={pathname === '/login'}
+                  label="Login"
+                />
+                <NavLink
+                  href="/signup"
+                  active={pathname === '/signup'}
+                  label="Signup"
+                />
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </nav>
   );
 }
 
-function NavLink({ href, active, label }: { href: string; active: boolean; label: string }) {
+function NavLink({
+  href,
+  active,
+  label,
+}: {
+  href: string;
+  active: boolean;
+  label: string;
+}) {
   return (
-    <Box
-      component={Link}
+    <Link
       href={href}
-      sx={{
-        position: 'relative',
-        display: 'inline-flex',
-        alignItems: 'center',
-        px: 1.5,
-        py: 0.75,
-        textDecoration: 'none',
-        fontFamily: 'var(--font-body), Outfit, sans-serif',
-        fontSize: '0.78rem',
-        fontWeight: 500,
-        letterSpacing: '0.05em',
-        textTransform: 'uppercase',
-        borderRadius: '6px',
-        border: '1px solid',
-        transition: 'all 0.15s',
-        ...(active
-          ? {
-              color: '#ffffff',
-              backgroundColor: 'rgba(129,140,248,0.1)',
-              borderColor: 'rgba(129,140,248,0.25)',
-            }
-          : {
-              color: '#6a6a88',
-              backgroundColor: 'transparent',
-              borderColor: 'transparent',
-              '&:hover': {
-                color: '#e2e2f0',
-                backgroundColor: 'rgba(255,255,255,0.04)',
-                borderColor: 'rgba(255,255,255,0.08)',
-              },
-            }),
-      }}
+      className={`relative inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-lg border transition-all no-underline ${
+        active
+          ? 'text-blue-600 bg-blue-50 border-blue-200'
+          : 'text-gray-500 bg-transparent border-transparent hover:text-gray-800 hover:bg-gray-50 hover:border-gray-200'
+      }`}
     >
       {label}
       {active && (
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '60%',
-            height: '2px',
-            borderRadius: '1px 1px 0 0',
-            background: 'linear-gradient(90deg, #818cf8, #22d3ee)',
-          }}
-        />
+        <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3/5 h-0.5 rounded-t bg-blue-500" />
       )}
-    </Box>
+    </Link>
   );
 }

@@ -23,7 +23,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'MicroApp — Dynamic Form',
+  title: 'Dynamic Form App',
   description: 'Microservice fullstack application with dynamic form engine',
 };
 
@@ -37,10 +37,10 @@ export default function RootLayout({
       lang="en"
       className={`${syne.variable} ${outfit.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-white text-gray-900">
         <ThemeRegistry>
           <ConditionalNavbar />
-          <main className="relative z-10 flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-10">
+          <main className="relative flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
             {children}
           </main>
         </ThemeRegistry>

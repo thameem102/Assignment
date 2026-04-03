@@ -1,16 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
 import { getSubmissions, clearSubmissions } from '@/lib/localStorage';
 import { FormSubmission, FormConfig } from '@/lib/types';
 import rawConfig from '@/config/formConfig.json';
@@ -40,96 +30,76 @@ export default function SubmissionsTable({ refreshKey }: SubmissionsTableProps) 
   };
 
   return (
-    <Box sx={{ mt: 4, animation: 'fadeUp 0.4s ease both' }}>
-      <Paper
-        elevation={0}
-        sx={{
-          position: 'relative',
-          overflow: 'hidden',
-          p: { xs: 2, sm: 4 },
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '2px',
-            background: 'linear-gradient(90deg, #818cf8, #22d3ee)',
-            zIndex: 1,
-          },
-        }}
-      >
+    <div className="mt-6" style={{ animation: 'fadeUp 0.4s ease both' }}>
+      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
         {/* Header row */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            mb: 3,
-            gap: 2,
-            flexWrap: 'wrap',
-          }}
-        >
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-            <Typography variant="h6" sx={{ color: '#e2e2f0' }}>
-              Past Submissions
-            </Typography>
-            {/* Count badge */}
-            <Box
-              sx={{
-                bgcolor: 'rgba(129,140,248,0.12)',
-                color: '#818cf8',
-                borderRadius: '4px',
-                px: 1,
-                py: 0.25,
-                fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
-                fontSize: '0.7rem',
-                fontWeight: 600,
-                border: '1px solid rgba(129,140,248,0.2)',
-                lineHeight: 1.6,
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <h3
+              className="text-base font-bold text-gray-900"
+              style={{
+                fontFamily: 'var(--font-display), Syne, sans-serif',
               }}
             >
+              Past Submissions
+            </h3>
+            <span className="inline-flex items-center justify-center px-2 py-0.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-200 rounded-md">
               {submissions.length}
-            </Box>
-          </Box>
-          <Button size="small" color="error" variant="outlined" onClick={handleClear}>
+            </span>
+          </div>
+          <button
+            onClick={handleClear}
+            className="px-3 py-1.5 text-xs font-medium text-red-500 border border-red-200 rounded-lg hover:bg-red-50 transition-colors"
+          >
             Clear All
-          </Button>
-        </Box>
+          </button>
+        </div>
 
         {/* Table */}
-        <TableContainer sx={{ overflowX: 'auto' }}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>Submitted At</TableCell>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-200 bg-gray-50">
+                <th className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  Submitted At
+                </th>
                 {config.data.map((f) => (
-                  <TableCell key={f.id}>{f.name}</TableCell>
+                  <th
+                    key={f.id}
+                    className="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide"
+                  >
+                    {f.name}
+                  </th>
                 ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
+              </tr>
+            </thead>
+            <tbody>
               {submissions.map((row, idx) => (
-                <TableRow key={idx}>
-                  <TableCell
-                    sx={{
-                      whiteSpace: 'nowrap',
-                      fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
+                <tr
+                  key={idx}
+                  className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
+                >
+                  <td
+                    className="px-4 py-3 text-gray-400 whitespace-nowrap"
+                    style={{
+                      fontFamily:
+                        'var(--font-mono), JetBrains Mono, monospace',
                       fontSize: '0.75rem',
-                      color: '#6a6a88',
                     }}
                   >
                     {new Date(row.timestamp).toLocaleString()}
-                  </TableCell>
+                  </td>
                   {config.data.map((f) => (
-                    <TableCell key={f.id}>{row[fieldKey(f.id)] ?? '—'}</TableCell>
+                    <td key={f.id} className="px-4 py-3 text-gray-700">
+                      {row[fieldKey(f.id)] ?? '—'}
+                    </td>
                   ))}
-                </TableRow>
+                </tr>
               ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Paper>
-    </Box>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 }

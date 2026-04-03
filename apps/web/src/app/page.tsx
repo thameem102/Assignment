@@ -3,8 +3,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getCurrentUser } from '@/lib/localStorage';
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
 
 export default function Home() {
   const router = useRouter();
@@ -15,8 +13,8 @@ export default function Home() {
   }, [router]);
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
-      <CircularProgress />
-    </Box>
+    <div className="flex justify-center items-center min-h-[50vh]">
+      <div className="w-8 h-8 border-3 border-blue-500 border-t-transparent rounded-full animate-spin" />
+    </div>
   );
 }

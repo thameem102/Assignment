@@ -2,12 +2,6 @@
 
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import Button from '@mui/material/Button';
-import Alert from '@mui/material/Alert';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
-import Divider from '@mui/material/Divider';
 import rawConfig from '@/config/formConfig.json';
 import { FormConfig, FormFieldConfig } from '@/lib/types';
 import FormField, { fieldKey } from '@/components/FormField';
@@ -21,7 +15,11 @@ function buildDefaults(fields: FormFieldConfig[]): Record<string, string> {
   );
 }
 
-export default function DynamicForm({ onSubmitSuccess }: { onSubmitSuccess?: () => void }) {
+export default function DynamicForm({
+  onSubmitSuccess,
+}: {
+  onSubmitSuccess?: () => void;
+}) {
   const [submitted, setSubmitted] = useState(false);
 
   const {
@@ -42,113 +40,97 @@ export default function DynamicForm({ onSubmitSuccess }: { onSubmitSuccess?: () 
   };
 
   return (
-    <Box sx={{ animation: 'fadeUp 0.5s ease both' }}>
-      {/* Page section header */}
-      <Box sx={{ mb: 3 }}>
-        <Typography
-          variant="overline"
-          sx={{ color: '#818cf8', display: 'block', mb: 0.5 }}
-        >
-          Dynamic Form Engine
-        </Typography>
-        <Typography
-          variant="h4"
-          sx={{ color: '#e2e2f0', fontWeight: 700, mb: 0.75 }}
+    <div style={{ animation: 'fadeUp 0.5s ease both' }}>
+      {/* Header */}
+      <div className="mb-4">
+        <div className="flex items-center gap-2 mb-1">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#3b82f6"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+          <span className="text-xs font-medium text-blue-500 tracking-wide uppercase">
+            Dynamic Form Engine
+          </span>
+        </div>
+        <h2
+          className="text-xl font-bold text-gray-900"
+          style={{ fontFamily: 'var(--font-display), Syne, sans-serif' }}
         >
           Signup Form
-        </Typography>
-        <Typography variant="body2" sx={{ color: '#6a6a88' }}>
+        </h2>
+        <p className="text-sm text-gray-500 mt-0.5">
           Fields are driven by{' '}
-          <Box
-            component="span"
-            sx={{
-              fontFamily: 'var(--font-mono), JetBrains Mono, monospace',
-              fontSize: '0.78rem',
-              color: '#22d3ee',
-              backgroundColor: 'rgba(34,211,238,0.08)',
-              px: 0.75,
-              py: 0.25,
-              borderRadius: '4px',
-              border: '1px solid rgba(34,211,238,0.2)',
-            }}
-          >
+          <code className="text-xs font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded border border-blue-100">
             formConfig.json
-          </Box>
-        </Typography>
-      </Box>
+          </code>
+        </p>
+      </div>
 
       {/* Card */}
-      <Paper
-        elevation={0}
-        sx={{
-          position: 'relative',
-          overflow: 'hidden',
-          p: { xs: 2, sm: 4 },
-          '&::before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            height: '2px',
-            background: 'linear-gradient(90deg, #818cf8, #22d3ee)',
-            zIndex: 1,
-          },
-        }}
-      >
+      <div className="bg-white border border-gray-200 rounded-xl p-4 sm:p-6">
         {submitted && (
-          <Alert
-            severity="success"
-            sx={{ mb: 3, animation: 'fadeIn 0.3s ease' }}
-            onClose={() => setSubmitted(false)}
-          >
+          <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-green-600 text-sm flex justify-between items-center animate-[fadeIn_0.3s_ease]">
             Form submitted and saved successfully!
-          </Alert>
+            <button
+              onClick={() => setSubmitted(false)}
+              className="text-green-400 hover:text-green-600 ml-2 text-lg leading-none"
+            >
+              &times;
+            </button>
+          </div>
         )}
 
-        <Box
-          component="form"
+        <form
           onSubmit={handleSubmit(onSubmit)}
           noValidate
-          sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+          className="space-y-4"
         >
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
-              gap: 3,
-            }}
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {config.data.map((field, idx) => (
-              <Box
+              <div
                 key={field.id}
-                sx={{
-                  gridColumn: field.fieldType === 'RADIO' ? { sm: '1 / -1' } : undefined,
+                className={
+                  field.fieldType === 'RADIO' ? 'sm:col-span-2' : ''
+                }
+                style={{
                   animation: 'fadeUp 0.4s ease both',
                   animationDelay: `${idx * 0.07}s`,
                 }}
               >
                 <FormField field={field} control={control} errors={errors} />
-              </Box>
+              </div>
             ))}
-          </Box>
+          </div>
 
-          <Divider sx={{ mt: 1 }} />
+          <hr className="border-gray-200 mt-2" />
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
-            <Button
+          <div className="flex gap-3 justify-end">
+            <button
               type="button"
-              variant="outlined"
               onClick={() => reset(buildDefaults(config.data))}
+              className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
             >
               Reset
-            </Button>
-            <Button type="submit" variant="contained" disabled={isSubmitting}>
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-5 py-2 text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition-colors disabled:opacity-50"
+            >
               Submit
-            </Button>
-          </Box>
-        </Box>
-      </Paper>
-    </Box>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }
