@@ -81,6 +81,11 @@ export default function Navbar() {
                   active={pathname === '/dashboard'}
                   label="Dashboard"
                 />
+                <NavLink
+                  href="/retail"
+                  active={pathname === '/retail'}
+                  label="Retail"
+                />
                 <span className="hidden sm:block text-xs text-gray-400 px-2 font-medium">
                   {user.fullName}
                 </span>
