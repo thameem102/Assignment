@@ -1,0 +1,17 @@
+{
+  "name": "microservice-app",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "start:product": "cd apps/product-service && npm run start:dev",
+    "start:order": "cd apps/order-service && npm run start:dev",
+    "start:web": "cd apps/web && npm run dev",
+    "start:all": "concurrently \"npm run start:product\" \"npm run start:order\" \"npm run start:web\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
