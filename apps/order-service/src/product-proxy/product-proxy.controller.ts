@@ -11,6 +11,7 @@ import {
   ServiceUnavailableException,
   NotFoundException,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBody } from '@nestjs/swagger';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom, timeout, catchError, Observable } from 'rxjs';
 
@@ -22,6 +23,7 @@ interface ProductGrpcService {
   deleteProduct(data: any): Observable<any>;
 }
 
+@ApiTags('products')
 @Controller('products')
 export class ProductProxyController implements OnModuleInit {
   private productService: ProductGrpcService;
@@ -36,6 +38,20 @@ export class ProductProxyController implements OnModuleInit {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new product' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['name', 'price', 'stock'],
+      properties: {
+        name: { type: 'string', example: 'iPhone 15' },
+        price: { type: 'number', example: 999.99 },
+        stock: { type: 'number', example: 50 },
+      },
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Product created successfully' })
+  @ApiResponse({ status: 503, description: 'Product Service unavailable' })
   async create(@Body() data: { name: string; price: number; stock: number }) {
     try {
       return await firstValueFrom(
@@ -49,6 +65,9 @@ export class ProductProxyController implements OnModuleInit {
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all products' })
+  @ApiResponse({ status: 200, description: 'List of all products' })
+  @ApiResponse({ status: 503, description: 'Product Service unavailable' })
   async findAll() {
     try {
       const result = await firstValueFrom(
@@ -63,6 +82,11 @@ export class ProductProxyController implements OnModuleInit {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get product by ID' })
+  @ApiParam({ name: 'id', description: 'Product UUID' })
+  @ApiResponse({ status: 200, description: 'Product found' })
+  @ApiResponse({ status: 404, description: 'Product not found' })
+  @ApiResponse({ status: 503, description: 'Product Service unavailable' })
   async findOne(@Param('id') id: string) {
     try {
       return await firstValueFrom(
@@ -87,6 +111,21 @@ export class ProductProxyController implements OnModuleInit {
   }
 
   @Put(':id')
+  @ApiOperation({ summary: 'Update a product' })
+  @ApiParam({ name: 'id', description: 'Product UUID' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        name: { type: 'string', example: 'iPhone 16' },
+        price: { type: 'number', example: 1099.99 },
+        stock: { type: 'number', example: 100 },
+      },
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Product updated successfully' })
+  @ApiResponse({ status: 404, description: 'Product not found' })
+  @ApiResponse({ status: 503, description: 'Product Service unavailable' })
   async update(
     @Param('id') id: string,
     @Body() data: { name?: string; price?: number; stock?: number },
@@ -114,6 +153,11 @@ export class ProductProxyController implements OnModuleInit {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a product' })
+  @ApiParam({ name: 'id', description: 'Product UUID' })
+  @ApiResponse({ status: 200, description: 'Product deleted successfully' })
+  @ApiResponse({ status: 404, description: 'Product not found' })
+  @ApiResponse({ status: 503, description: 'Product Service unavailable' })
   async delete(@Param('id') id: string) {
     try {
       return await firstValueFrom(
